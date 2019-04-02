@@ -1,0 +1,59 @@
+#include <iostream>
+#include<list>
+#include<stdio.h>
+#include<string>
+using namespace std;
+
+struct treeNode{
+  char value;
+  struct treeNode *left, * right;
+  treeNode(){
+    left = right = NULL;
+  }
+};
+typedef struct treeNode treeNode;
+
+treeNode * constructTree(char str[])
+{
+  //int len = strlen(str);
+  list<treeNode *> mStack;
+  for(int i=0; str[i]!='\0'; i++)
+    if(str[i] == '+' || str[i] == '*' || str[i] =='/')
+      {
+        treeNode * one, * two;
+        two = mStack.back();
+        mStack.pop_back();
+        one = mStack.back();
+        mStack.pop_back();
+        treeNode * newNode = new treeNode;
+        newNode->value = str[i];
+        newNode->left = one;
+        newNode->right = two;
+        mStack.push_back(newNode);
+      }
+    else
+      {
+        treeNode * newNode = new treeNode;
+        newNode->value = str[i];
+        mStack.push_back(newNode);
+      }
+  return mStack.back();
+}
+
+void inorder(treeNode * root)
+{
+  if(root ==NULL)
+    return;
+  
+  inorder(root->left);
+  printf("%c ", root->value);
+  inorder(root->right);
+}
+
+int main() {
+  
+  char arr[] = "ab+ef*/";
+  treeNode * root = constructTree(arr); 
+  inorder(root);
+  return 0;
+}
